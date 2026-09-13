@@ -13,6 +13,9 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
+# Generated animation videos/logs
+trajectory-anims/
+
 # OS files
 .DS_Store
 

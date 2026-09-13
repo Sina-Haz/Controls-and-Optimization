@@ -28,21 +28,15 @@ class Quadrotor(object):
     """
 
         # Get L(tf) L(tf).T = S(tf) by decomposing S(tf) using Cholesky decomposition
-        L0 = cholesky(Qf).transpose()
-
+        Lf = cholesky(Qf) # returns lower by default, no need to transpose
         # We need to reshape L0 from a square matrix into a row vector to pass into solve_ivp()
-        l0 = np.reshape(L0, (36))
-        # L must be integrated backwards, so we integrate L(tf - t) from 0 to tf
-        initial_condition = [0, tf]  # noqa: F841
-        sol = solve_ivp(self.dldt_minus, [0, tf], l0, dense_output=True)
-        t = sol.t
-        l = sol.y
-
-        # Reverse time to get L(t) back in forwards time
-        t = tf - t
-        t = np.flip(t)
-        l = np.flip(l, axis=1)  # flip in time
-        self.l_spline = interp1d(t, l)
+        lf = np.reshape(Lf, (36))
+        # L must be integrated backwards, solve_ivp handles for us if we pass it inverted tspan from tf-> 0
+        tspan = [tf, 0]
+        def _ldot(t, l):
+          return np.reshape(self.Ldot(t, l.reshape(6, 6)), 36)
+        sol = solve_ivp(_ldot, tspan, lf, dense_output=True)
+        self.l_spline = sol.sol
 
     # Linearized Dynamics of _f(x, u) in quad_sim to get xdot \approx A(t)x_e + B(t)x_e
     def A(self, t):
@@ -73,7 +67,6 @@ class Quadrotor(object):
         return B
 
     def Ldot(self, t, L):
-
         Q = self.Q
         R = self.R
         A = self.A(t)
@@ -86,16 +79,6 @@ class Quadrotor(object):
 
         return dLdt
 
-    def dldt_minus(self, t, l):
-        # reshape l to a square matrix
-        L = np.reshape(l, (6, 6))
-
-        # compute Ldot
-        dLdt_minus = -self.Ldot(t, L)
-
-        # reshape back into a vector
-        dldt_minus = np.reshape(dLdt_minus, (36))
-        return dldt_minus
 
     def compute_feedback(self, t, x):
         # compute current trajectory error x_e:
