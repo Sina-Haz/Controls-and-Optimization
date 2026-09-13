@@ -11,3 +11,25 @@ Full writeup: [`Controls_HW_1.pdf`](Controls_HW_1.pdf). Problem statement: [`MEA
 5. **2D nonlinear equilibrium** — find equilibria of a 2D nonlinear system, classify stability via Jacobian linearization, compute phase portraits, and approximate the region of attraction numerically (grid sampling + forward integration + convex hull).
 6. **1D phase plot / bifurcation** — analyze `ẋ = x² + a`: equilibria, stability by case on `a`, region of attraction, and the bifurcation diagram as `a` varies.
 7. **Nonlinear system in polar coordinates** — verify an equilibrium point, show the linearization test is inconclusive (zero eigenvalue), then argue convergence directly from the structure of the dynamics (θ monotonically relaxes to 0, then r relaxes to 1).
+
+## Results
+
+**2D nonlinear equilibrium.** Phase portrait around the stable equilibrium `x* = (-1, 2)` (left), then the approximate region of attraction found by grid sampling + forward integration + convex hull (right):
+
+<p align="center">
+  <img src="assets/phase-plot-equilibrium.png" width="45%" alt="2D phase plot around equilibrium">
+  <img src="assets/phase-plot-roa-boundary.png" width="45%" alt="Phase plot with approximate region-of-attraction boundary">
+</p>
+
+Sampled trajectories confirming the boundary — one converging to `x*`, one diverging outside it:
+
+<p align="center">
+  <img src="assets/phase-plot-sampled-trajectories.png" width="60%" alt="Phase plot with sampled converging/diverging trajectories">
+</p>
+
+**1D phase plot / bifurcation.** `ẋ = x² - 1` with its two equilibria (left), and the resulting bifurcation diagram as `a` varies in `ẋ = x² + a` (right):
+
+<p align="center">
+  <img src="assets/phase-plot-1d.png" width="45%" alt="1D phase plot of x-dot = x^2 - 1">
+  <img src="assets/bifurcation-diagram.png" width="45%" alt="Bifurcation diagram">
+</p>
