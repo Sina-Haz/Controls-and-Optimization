@@ -18,19 +18,20 @@ from unicycle_input import unicycle_input
 from plot_unicycle_trajectory import plot_unicycle_trajectory
 
 
-# Two randomly placed obstacles.  ``*_x`` is the horizontal (flat-output y)
-# coordinate and ``*_y`` is the vertical (flat-output z) coordinate.
+# Three randomly placed circular obstacles, alternating above/below the
+# straight line from (0,0) to (10,0). Each one straddles that line, so the
+# path has to slalom: under the first, over the second, under the third.
+# Each obstacle is (y, z, radius) in flat-output coordinates.
 class Obstacles:
     def __init__(self):
-        self.obstacle_1_x = uniform(3, 4)
-        self.obstacle_1_y = uniform(2, 4)
-        self.obstacle_1_radius = uniform(2.5, 3)
-        self.obstacle_2_x = 8
-        self.obstacle_2_y = uniform(-3, -1)
-        self.obstacle_2_radius = uniform(1.5, np.nextafter(2, 1.5))
+        self.obstacles = [
+            (uniform(2.0, 2.4), uniform(0.3, 0.6), uniform(0.6, 0.9)),
+            (uniform(4.8, 5.2), uniform(-0.6, -0.3), uniform(0.6, 0.9)),
+            (uniform(7.6, 8.0), uniform(0.3, 0.6), uniform(0.6, 0.9)),
+        ]
 
 
-def simulate_unicycle():
+def simulate_unicycle(n_frame=10):
     # SIMULATE_UNICYCLE simulates a trajectory for the unicycle system
     t0 = 0.0
     tf = 10.0
@@ -56,9 +57,9 @@ def simulate_unicycle():
     x0 = np.array([0, 0, np.arctan2(z_spline(t0, 1), y_spline(t0, 1))])
 
     # Integrate
-    sol = solve_ivp(f, (0, tf), x0, t_eval=np.linspace(t0, tf, 100), max_step=5e-3)
+    sol = solve_ivp(f, (0, tf), x0, t_eval=np.linspace(t0, tf, 200), max_step=5e-3)
 
-    return plot_unicycle_trajectory(sol.t, sol.y.T, y_spline, z_spline, obs)
+    return plot_unicycle_trajectory(sol.t, sol.y.T, y_spline, z_spline, obs, n_frame)
 
 
 if __name__ == "__main__":

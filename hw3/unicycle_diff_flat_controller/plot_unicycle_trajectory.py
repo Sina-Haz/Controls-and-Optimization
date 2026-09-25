@@ -15,11 +15,9 @@ def plot_unicycle_trajectory(t, x, y_spline, z_spline, obs, n_frame = 10):
   x_max = max(np.max(y_d) + 1, np.max(x[:, 0]))
   x_min = min(np.min(y_d) - 1, np.min(x[:, 0]))
   y_max = max(np.max(z_d) + 1, np.max(x[:, 1]),
-              obs.obstacle_1_y + obs.obstacle_1_radius + 1,
-              obs.obstacle_2_y + obs.obstacle_2_radius + 1)
+              *(oz + r + 0.5 for _, oz, r in obs.obstacles))
   y_min = min(np.min(z_d) - 1, np.min(x[:, 1]),
-              obs.obstacle_1_y - obs.obstacle_1_radius - 1,
-              obs.obstacle_2_y - obs.obstacle_2_radius - 1)
+              *(oz - r - 0.5 for _, oz, r in obs.obstacles))
 
   frame_idx = [round(x) for x in np.linspace(0, x.shape[0]-1, n_frame).tolist()]
   x_anim = np.zeros((n_frame, 3))
@@ -31,8 +29,9 @@ def plot_unicycle_trajectory(t, x, y_spline, z_spline, obs, n_frame = 10):
   z = x_anim[:,1]
   theta = x_anim[:,2]
 
-  fig = plt.figure(figsize=(8,6))
+  fig = plt.figure(figsize=(9,4.5))
   ax = plt.axes()
+  fig.subplots_adjust(bottom=0.32)
 
   def frame(i):
     ax.clear()
@@ -46,10 +45,9 @@ def plot_unicycle_trajectory(t, x, y_spline, z_spline, obs, n_frame = 10):
     ax.plot(x[:frame_idx[i], 0], x[:frame_idx[i], 1], '--', label='Actual trajectory')
 
     # Obstacles
-    for j in (1, 2):
-      a_circle = plt.Circle((getattr(obs, f'obstacle_{j}_x'), getattr(obs, f'obstacle_{j}_y')),
-                            getattr(obs, f'obstacle_{j}_radius'), color='r', label=f'Obstacle {j}')
-      ax.add_artist(a_circle)
+    for j, (oy, oz, r) in enumerate(obs.obstacles):
+      a_circle = plt.Circle((oy, oz), r, color='r', label='Obstacles' if j == 0 else None)
+      ax.add_patch(a_circle)
     # Unicycle
     plot = ax.plot([y[i] + a*cos(theta[i]), y[i] - a*cos(theta[i])],
                    [z[i] + a*sin(theta[i]), z[i] - a*sin(theta[i])] , 'k', label='Unicycle')
@@ -59,7 +57,7 @@ def plot_unicycle_trajectory(t, x, y_spline, z_spline, obs, n_frame = 10):
     ax.set_xlabel('y (m)')
     ax.set_ylabel('z (m)')
     ax.set_aspect('equal')
-    ax.legend(loc='upper right')
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.22), ncol=3)
 
     if not ('google.colab' in str(get_ipython())):
       plt.draw()
