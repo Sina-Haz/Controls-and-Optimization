@@ -28,4 +28,4 @@ cd cartpole_energy_shaping && python cartpole_sim.py           # simulate swing-
 cd unicycle_diff_flat_controller && python unicycle_sim.py     # simulate spline-tracking with obstacle avoidance
 ```
 
-`cartpole.ipynb` / `unicycle.ipynb` contain the full exploration used to generate the animations above.
+`cartpole.ipynb` / `unicycle.ipynb` contain the original exploration. Obstacles are re-sampled on every run of `unicycle_sim.py`, so each run produces a different slalom.

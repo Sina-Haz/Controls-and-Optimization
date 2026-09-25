@@ -12,11 +12,10 @@ Full writeup: [`Controls_HW_2.pdf`](Controls_HW_2.pdf).
 
 ## Results
 
-**TV-LQR tracking a circular trajectory.** The controller is robust to large initial error (`‖x_e(0)‖ ≈ 10`, left), but once the initial state is far enough that the local linearization around `(x_d, u_d)` no longer holds, the nonlinear dynamics cause the error to compound and tracking diverges (right):
+**TV-LQR tracking a circular trajectory.** Starting far off the reference (`x_e(0) = [4.03, 2.35, 0.46, -1.04, 1.51, -1.77]`, ~4.7 m position error, tilted and moving the wrong way), the TV-LQR controller pulls the quadrotor back onto the circle within ~3 s and then tracks it to within ~1 mm by `t_f = 2π` (animation slowed ~2x):
 
 <p align="center">
-  <img src="assets/converging-trajectory.gif" width="45%" alt="Converging trajectory animation">
-  <img src="assets/diverging-trajectory.gif" width="45%" alt="Diverging trajectory animation">
+  <img src="assets/tvlqr-tracking.gif" width="60%" alt="TV-LQR recovering from large initial error and tracking the circular trajectory">
 </p>
 
 **Grid-world value iteration.** The environment (goal in blue, walls/"sticky" states in gray):
@@ -39,4 +38,4 @@ cd quadrotor && python quad_sim.py       # simulate + plot TV-LQR trajectory tra
 cd grid_world && python value_iteration.py  # run value iteration + plot result
 ```
 
-`hw2_quadrotor_sim.ipynb` contains the full exploration used to generate the animations above; raw `.mp4` renders + per-step error logs are in `quadrotor/trajectory-anims/`.
+`quadrotor/hw2_quadrotor_sim.ipynb` contains the full exploration of initial conditions. The tracking animation above is rendered with `create_animation()` from [`create_animation.py`](quadrotor/create_animation.py) using `x0 = x_d(0) + x_e(0)` with the `x_e(0)` given above.

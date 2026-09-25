@@ -53,8 +53,8 @@ def create_animation(x, x_d, tf, n_frame):
             linewidth=3,
         )
 
-        # ax.set_xlim(x_min,x_max)
-        # ax.set_ylim(y_min,y_max)
+        ax.set_xlim(x_min - 0.5, x_max + 0.5)
+        ax.set_ylim(y_min - 0.5, y_max + 0.5)
         ax.set_xlabel("y (m)")
         ax.set_ylabel("z (m)")
         ax.set_aspect("equal")
