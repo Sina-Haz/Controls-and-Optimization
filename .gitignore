@@ -21,3 +21,7 @@ trajectory-anims/
 
 # Claude Code local settings (machine-specific, not shared)
 **/.claude/settings.local.json
+
+# Raw animation sources (README uses the GIFs instead)
+hw5/Ball-throw-Direct-Collocation/ball-throw-n5-d15.tar
+hw5/Quadrotor-Swingup-iLQR/quadrotor_ilqr_solution.mp4
